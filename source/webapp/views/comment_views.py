@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, View
 
 from webapp.models import Comment, Article, CommentLike
 from webapp.forms import ArticleCommentForm

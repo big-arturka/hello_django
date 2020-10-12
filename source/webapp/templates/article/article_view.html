@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load likes %}
 
 {% block title %}View{% endblock %}
 
@@ -22,6 +23,15 @@
         </p>
         <p>Published at: {{ article.publish_at|date:"d.m.Y H:i:s" }}</p>
         <p>Tags: {% for tag in article.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        {% if user.is_authenticated %}
+            <p>
+                <span class="counter">{{ article.like_count }}</span>
+                {% with article|liked_by:user as liked %}
+                    <a class="{% if liked %}hidden{% endif %} like" href="{% url 'webapp:article_like' article.pk %}">Like</a>
+                    <a class="{% if not liked %}hidden{% endif %} unlike" href="{% url 'webapp:article_unlike' article.pk %}">Unlike</a>
+                {% endwith %}
+            </p>
+        {% endif %}
         <hr>
         <h3>Comments:</h3>
         {% if is_paginated %}
@@ -40,6 +50,15 @@
                 {% if perms.webapp.delete_comment or comment.author == request.user %}
                     <p><a href="{% url 'webapp:comment_delete' comment.pk %}">Delete</a></p>
                 {% endif %}
+                {% if user.is_authenticated %}
+                <p>
+                    <span class="counter">{{ comment.like_count }}</span>
+                    {% with comment|liked_by:user as liked %}
+                        <a class="{% if liked %}hidden{% endif %} like" href="{% url 'webapp:comment_like' comment.pk %}">Like</a>
+                        <a class="{% if not liked %}hidden{% endif %} unlike" href="{% url 'webapp:comment_unlike' comment.pk %}">Unlike</a>
+                    {% endwith %}
+                </p>
+            {% endif %}
             </div>
         {% empty %}
             <p>Нет комментариев</p>
