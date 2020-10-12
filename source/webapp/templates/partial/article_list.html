@@ -1,0 +1,53 @@
+{% load likes %}
+
+{% if is_paginated %}
+    {% include 'partial/pagination.html' %}
+{% endif %}
+
+{% if show_mass_delete %}
+    <form action="{% url "webapp:article_mass_action" %}" method="post">
+        {% csrf_token %}
+        <p class="mass-actions"><input type="submit" name="delete" value="Delete selected"></p>
+{% endif %}
+        {% for article in articles %}
+            <div class="box">
+                <h3><a href="{% url "webapp:article_view" article.pk %}">{{ article.title }}</a></h3>
+                {% if show_mass_delete %}
+                    <p>
+                        <label for="selected_articles-{{ article.pk }}">Select:</label>
+                        <input type="checkbox" name="selected_articles"
+                               id="selected_articles-{{ article.pk }}" value="{{ article.pk }}">
+                    </p>
+                {% endif %}
+                <p>Статус: ({{ article.status }} | {{ article.get_status_display }})</p>
+                <p>
+                    <a href="{% url 'accounts:detail' article.author_id %}">{{ article.author }}</a>
+                    | {{ article.created_at|date:"d.m.Y H:i:s" }}
+                </p>
+                <p>Published at: {{ article.publish_at|date:"d.m.Y H:i:s" }}</p>
+                {% if perms.webapp.change_article or article.author == request.user %}
+                    <p><a href="{% url 'webapp:article_update' article.pk %}">Update</a></p>
+                {% endif %}
+                {% if perms.webapp.delete_article or article.author == request.user %}
+                    <p><a href="{% url 'webapp:article_delete' article.pk %}">Delete</a></p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <p>
+                        <span class="counter">{{ article.like_count }}</span>
+                        {% with article|liked_by:user as liked %}
+                            <a class="{% if liked %}hidden{% endif %} like" href="{% url 'webapp:article_like' article.pk %}">Like</a>
+                            <a class="{% if not liked %}hidden{% endif %} unlike" href="{% url 'webapp:article_unlike' article.pk %}">Unlike</a>
+                        {% endwith %}
+                    </p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <h2 class="text-center">Нет статей</h2>
+        {% endfor %}
+{% if show_mass_delete %}
+    </form>
+{% endif %}
+
+{% if is_paginated %}
+    {% include 'partial/pagination.html' %}
+{% endif %}

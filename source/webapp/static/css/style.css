@@ -1,0 +1,177 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #444444;
+
+    /* отступ, чтобы компенсировать высоту навбара */
+    margin-top: 60px;
+}
+
+.container {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 900px;
+}
+
+.navbar {
+    display: block;
+    background: #6a7dff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    font-size: 0;
+    box-sizing: border-box;
+    padding: 7px 30px;
+}
+
+.menu {
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    color: #fffee8;
+}
+
+.menu li {
+    display: inline-block;
+}
+
+.menu a {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    padding: 5px 15px;
+}
+
+.menu a:hover {
+    color: #ffc122;
+    text-decoration: underline;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+    margin-top: 2px;
+}
+
+.form-input {
+    border-radius: 5px;
+    border: solid 1px lightgray;
+    background: gray;
+    color: white;
+    padding: 3px 5px;
+}
+
+.form-input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.form-error {
+    border: solid 1px red;
+    background: darkred;
+}
+
+.form-error:focus {
+    box-shadow: 0 0 5px rgb(255, 0, 0);
+}
+
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+.search-form {
+    display: inline-block;
+    float: right;
+}
+
+.form-checkboxes {
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 5px 10px;
+}
+
+.form-checkboxes li {
+    padding: 3px;
+}
+
+.pagination {
+    text-align: center;
+}
+
+.pagination a, .pagination .page-disabled, .mass-actions input {
+    display: inline-block;
+    border: solid 1px #6a7ddd;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 3px;
+}
+
+.pagination a, .mass-actions input {
+    background: #6a7ddd;
+    color: white;
+    text-decoration: none;
+}
+
+.pagination a:hover, .mass-actions input:hover {
+    background: #6a7dff;
+    text-decoration: underline;
+}
+
+.pagination .page-disabled {
+    background: #6a7dcc;
+    color: #dddddd
+}
+
+.pagination .current-page {
+    display: inline-block;
+}
+
+.pagination .current-page input {
+    width: 50px;
+    padding: 5px 7px;
+    font-size: inherit;
+    border-radius: 5px;
+    text-align: center;
+    border: solid 1px gray;
+}
+
+.box {
+    box-sizing: border-box;
+    border: solid 1px gray;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.mass-actions {
+    text-align: right;
+}
+
+input[type='submit']:hover {
+    cursor: pointer;
+}
+
+.avatar {
+    display: inline-block;
+    float: left;
+    width: 250px;
+    height: auto;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.clear {
+    clear: both;
+}
+
+.hidden {
+    display: none;
+}

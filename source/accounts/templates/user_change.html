@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактировать пользователя{% endblock %}
+
+{% block menu %}
+    <li><a href="{% url "accounts:detail" user_obj.pk %}">Назад</a></li>
+    <li><a href="{% url "accounts:password_change" %}">Смена пароля</a></li>
+{% endblock %}
+
+{% block content %}
+    <h1>Поменять личные данные</h1>
+    <form action="{% url 'accounts:change' user_obj.pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'partial/form.html' with form=form fields_only=True %}
+        {% include 'partial/form.html' with form=profile_form fields_only=True %}
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

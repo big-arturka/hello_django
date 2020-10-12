@@ -1,0 +1,61 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}My Site{% endblock %}</title>
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block links %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <ul class="menu">
+                <li><a href="{% url 'webapp:index' %}">Home</a></li>
+                {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'webapp:article_create' %}">Add Article</a></li>
+                    {% block menu %}{% endblock %}
+                    <li><a href="{% url 'accounts:detail' request.user.pk %}">
+                        Привет, {{ request.user.get_full_name|default:request.user.username }}
+                    </a></li>
+                {% endif %}
+                {% block auth_menu %}
+                    {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'accounts:logout' %}?next={{ request.get_full_path }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'accounts:login' %}?next={{ request.get_full_path }}">Login</a></li>
+                        <li><a href="{% url 'accounts:create' %}?next={{ request.get_full_path }}">Sign Up</a></li>
+                    {% endif %}
+                {% endblock %}
+                {% if not request.user.is_authenticated %}
+                    <li><a href="{% url 'accounts:password_reset_email' %}">Reset Password</a></li>
+                {% endif %}
+            </ul>
+
+            {% block search %}
+                <div class="search-form">
+                    <form action="{% url 'webapp:index' %}" method="GET">
+                        {{ search_form.search }}
+                        <input type="submit" value="Найти">
+                    </form>
+                </div>
+            {% endblock %}
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+    <script src="{% static "js/main.js" %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

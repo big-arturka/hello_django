@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Update{% endblock %}
+
+{% block menu %}
+    <li><a href="{% url 'webapp:article_view' article.pk %}">Отмена</a></li>
+{% endblock %}
+
+{% block content %}
+    <h1>Update Article</h1>
+
+    {% url "webapp:article_update" pk=article.pk as action_url %}
+    {% include 'partial/form.html' with action_url=action_url form_method='post' button_text='Update' %}
+{% endblock %}

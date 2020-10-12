@@ -1,0 +1,34 @@
+{% load page_utils %}
+
+<div class="pagination">
+    <span class="step-links">
+        <a href="?{{ request|page_query_string:1 }}">&laquo; В начало</a>
+
+        {% if page_obj.has_previous %}
+            <a href="?{{ request|page_query_string:page_obj.previous_page_number }}">Назад</a>
+        {% else %}
+            <span class="page-disabled">Назад</span>
+        {% endif %}
+
+
+        <form class="current-page" method="get">
+            <label for="page">
+                {% for key, value in request.GET.items %}
+                    {% if not key == 'page' %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
+                    {% endif %}
+                {% endfor %}
+                Страница <input type="text" name="page" id="page" value="{{ page_obj.number }}">
+                из {{ page_obj.paginator.num_pages }}.
+            </label>
+        </form>
+
+        {% if page_obj.has_next %}
+            <a href="?{{ request|page_query_string:page_obj.next_page_number }}">Далее</a>
+        {% else %}
+            <span class="page-disabled">Далее</span>
+        {% endif %}
+
+        <a href="?{{ request|page_query_string:page_obj.paginator.num_pages }}">В конец &raquo;</a>
+    </span>
+</div>
