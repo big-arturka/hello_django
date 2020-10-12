@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, UpdateView, DeleteView
 
-from webapp.models import Comment, Article
+from webapp.models import Comment, Article, CommentLike
 from webapp.forms import ArticleCommentForm
 
 
@@ -49,3 +50,25 @@ class CommentDeleteView(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('webapp:article_view', kwargs={'pk': self.object.article.pk})
+
+
+class CommentLikeView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get('pk'))
+        like, created = CommentLike.objects.get_or_create(comment=comment, user=request.user)
+        if created:
+            comment.like_count += 1
+            comment.save()
+            return HttpResponse(comment.like_count)
+        else:
+            return HttpResponseForbidden()
+
+
+class CommentUnLikeView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=kwargs.get('pk'))
+        like = get_object_or_404(comment.likes, user=request.user)
+        like.delete()
+        comment.like_count -= 1
+        comment.save()
+        return HttpResponse(comment.like_count)
