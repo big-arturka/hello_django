@@ -1,7 +1,6 @@
 import json
 
-from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
-from django.views.generic import View
+from django.http import HttpResponseNotAllowed, HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.response import Response
 from rest_framework.views import APIView
