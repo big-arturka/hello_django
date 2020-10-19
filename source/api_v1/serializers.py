@@ -10,12 +10,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(read_only=True,
-                                               view_name='api_v1:user-detail')
+    url = serializers.HyperlinkedIdentityField(read_only=True, view_name='api_v1:user-detail')
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'url', 'username', 'first_name', 'last_name', 'email']
+        fields = ['id','url', 'username', 'first_name', 'last_name', 'email']
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -28,6 +27,6 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ['id', 'url', 'title', 'text', 'author', 'author_url' 'status',
+        fields = ['id', 'url', 'title', 'text', 'author', 'author_url', 'status',
                   'created_at', 'updated_at', 'tags', 'tags_display']
         read_only_fields = ('author',)
