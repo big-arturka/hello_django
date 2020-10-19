@@ -44,7 +44,7 @@ class ArticleCreateView(APIView):
 
 
 class ArticleUpdateView(APIView):
-    def post(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         data = json.loads(request.body)
         instance = Article.objects.get(pk=kwargs.get('pk'))
         slr = ArticleSerializer(data=data, instance=instance)
@@ -58,7 +58,7 @@ class ArticleUpdateView(APIView):
         
 
 class ArticleDeleteView(APIView):
-    def post(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         object = Article.objects.get(pk=kwargs.get('pk'))
         object.delete()
         return Response({'id': kwargs.get('pk')})
