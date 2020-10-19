@@ -1,11 +1,14 @@
 import json
 
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseNotAllowed, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet, ModelViewSet
 
-from api_v1.serializers import ArticleSerializer
+from api_v1.serializers import ArticleSerializer, UserSerializer
 from webapp.models import Article
 
 
@@ -16,49 +19,42 @@ def get_token_view(request, *args, **kwargs):
     return HttpResponseNotAllowed('Only GET request are allowed')
 
 
-class ArticleListView(APIView):
-    def get(self, request, *args, **kwargs):
+class ArticleViewSet(ViewSet):
+    queryset = Article.objects.all()
+
+    def list(self, request):
         objects = Article.objects.all()
         slr = ArticleSerializer(objects, many=True)
         return Response(slr.data)
 
+    def create(self, request):
+        slr = ArticleSerializer(data=request.body)
+        if slr.is_valid():
+            article = slr.save()
+            return Response(slr.data)
+        else:
+            return Response(slr.errors, status=400)
 
-class ArticleDetailView(APIView):
-    def get(self, request, *args, **kwargs):
-        object = Article.objects.filter(pk=kwargs.get('pk'))
-        slr = ArticleSerializer(object, many=True)
+    def retrieve(self, request, pk=None):
+        object = get_object_or_404(Article, pk=pk)
+        slr = ArticleSerializer(object)
         return Response(slr.data)
 
-
-class ArticleCreateView(APIView):
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        slr = ArticleSerializer(data=data)
+    def update(self, request, pk=None):
+        article = get_object_or_404(Article, pk=pk)
+        slr = ArticleSerializer(data=request.data, instance=article)
         if slr.is_valid():
             article = slr.save()
             return Response(slr.data)
         else:
-            response = Response(slr.errors)
-            response.status_code = 400
-            return response
+            return Response(slr.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        article = get_object_or_404(Article, pk=pk)
+        article.delete()
+        return Response({'id': pk})
 
 
-class ArticleUpdateView(APIView):
-    def put(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        instance = Article.objects.get(pk=kwargs.get('pk'))
-        slr = ArticleSerializer(data=data, instance=instance)
-        if slr.is_valid():
-            article = slr.save()
-            return Response(slr.data)
-        else:
-            response = Response(slr.errors)
-            response.status_code = 400
-            return response
-        
-
-class ArticleDeleteView(APIView):
-    def delete(self, request, *args, **kwargs):
-        object = Article.objects.get(pk=kwargs.get('pk'))
-        object.delete()
-        return Response({'id': kwargs.get('pk')})
+class UserViewSet(ModelViewSet):
+    queryset = get_user_model().objects.all()
+    serializer_class = UserSerializer

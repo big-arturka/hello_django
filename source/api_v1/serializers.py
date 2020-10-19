@@ -1,21 +1,33 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from webapp.models import STATUS_CHOICES, Article
+from webapp.models import Article, Tag
 
 
-class ArticleSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=200, required=True)
-    text = serializers.CharField(max_length=3000, required=True)
-    author = serializers.PrimaryKeyRelatedField(read_only=True)
-    status = serializers.ChoiceField(choices=STATUS_CHOICES, required=False)
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'
 
-    def create(self, validated_data):
-        return Article.objects.create(**validated_data)
 
-    def update(self, instance, validated_data):
-        for key, value in validated_data.items():
-            setattr(instance, key, value)
-        instance.save()
-        return instance
+class UserSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(read_only=True,
+                                               view_name='api_v1:user-detail')
+
+    class Meta:
+        model = get_user_model()
+        fields = ['id', 'url', 'username', 'first_name', 'last_name', 'email']
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(read_only=True,
+                                               view_name='api_v1:article-detail')
+    author_url = serializers.HyperlinkedRelatedField(read_only=True, source='author',
+                                                     view_name='api_v1:user-detail')
+    author = UserSerializer(read_only=True)
+    tags_display = TagSerializer(many=True, read_only=True, source='tags')
+
+    class Meta:
+        model = Article
+        fields = ['id', 'url', 'title', 'text', 'author', 'author_url' 'status',
+                  'created_at', 'updated_at', 'tags', 'tags_display']
+        read_only_fields = ('author',)
